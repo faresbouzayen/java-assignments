@@ -1,7 +1,6 @@
 package com.fulfilment.application.monolith.warehouses.adapters.restapi;
 
 import com.fulfilment.application.monolith.warehouses.adapters.database.WarehouseRepository;
-import com.fulfilment.application.monolith.warehouses.domain.models.Warehouse;
 import com.fulfilment.application.monolith.warehouses.domain.ports.ArchiveWarehouseOperation;
 import com.fulfilment.application.monolith.warehouses.domain.ports.CreateWarehouseOperation;
 import com.fulfilment.application.monolith.warehouses.domain.ports.ReplaceWarehouseOperation;
@@ -83,8 +82,9 @@ public class WarehouseResourceImpl implements WarehouseResource {
     return response;
   }
 
-  private Warehouse toWarehouseDomain(Warehouse data) {
-    var warehouse = new Warehouse();
+  private com.fulfilment.application.monolith.warehouses.domain.models.Warehouse toWarehouseDomain(
+      Warehouse data) {
+    var warehouse = new com.fulfilment.application.monolith.warehouses.domain.models.Warehouse();
     warehouse.businessUnitCode = data.getBusinessUnitCode();
     warehouse.location = data.getLocation();
     warehouse.capacity = data.getCapacity();

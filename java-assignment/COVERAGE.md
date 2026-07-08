@@ -38,7 +38,7 @@ target/site/jacoco/index.html
 
 ### View coverage in IDE
 
-IntelliJ IDEA can import JaCoCo `.exec` files from `target/jacoco.exec`.
+IntelliJ IDEA can import JaCoCo `.exec` files from `target/jacoco.exec`. In IntelliJ, run tests with JaCoCo and open `target/site/jacoco/index.html` in a browser.
 
 ### Skip coverage check (if needed)
 
@@ -48,24 +48,40 @@ IntelliJ IDEA can import JaCoCo `.exec` files from `target/jacoco.exec`.
 
 ## Coverage Analysis
 
-### Classes under test
+### Test inventory
 
-| Package | Class | Covered | Notes |
-|---------|-------|---------|-------|
-| `location` | `LocationGateway` | ✅ | 5 unit tests (positive, negative, edge cases) |
-| `warehouses.domain.usecases` | `CreateWarehouseUseCase` | ✅ | 8 unit tests covering all validation rules |
-| `warehouses.domain.usecases` | `ReplaceWarehouseUseCase` | ✅ | 7 unit tests covering all validation rules |
-| `warehouses.domain.usecases` | `ArchiveWarehouseUseCase` | ✅ | 2 unit tests covering archive logic |
-| `warehouses.adapters.database` | `WarehouseRepository` | ⚠️ | Integration tested via endpoint tests |
-| `warehouses.adapters.restapi` | `WarehouseResourceImpl` | ⚠️ | Integration tested via `WarehouseEndpointIT` |
-| `fulfillment` | `FulfillmentResource` | ⚠️ | Integration tested via `FulfillmentEndpointIT` |
-| `stores` | `StoreResource` | ⚠️ | Integration tested via product/store tests |
-| `products` | `ProductResource` | ⚠️ | Integration tested via `ProductEndpointTest` |
+| Test class | Type | Tests | Scope |
+|------------|------|-------|-------|
+| `LocationGatewayTest` | Unit (JUnit 5) | 5 | Positive + negative + edge cases |
+| `CreateWarehouseUseCaseTest` | Unit (Mockito) | 9 | All validation rules (BUC, location, capacity, stock) |
+| `ReplaceWarehouseUseCaseTest` | Unit (Mockito) | 7 | All replace validations |
+| `ArchiveWarehouseUseCaseTest` | Unit (Mockito) | 2 | Archive + re-archive |
+| `StoreEndpointIT` | Integration (QuarkusTest) | 8 | CRUD + validation + delete |
+| `ProductEndpointTest` | Integration (QuarkusTest) | 1 | List + delete |
+| `WarehouseEndpointIT` | Integration (QuarkusIntegrationTest) | 4 | List + archive + 404 |
+| `FulfillmentEndpointIT` | Integration (QuarkusTest) | 7 | CRUD + validation + 404 |
+| **Total** | | **43** | |
+
+### Coverage by layer
+
+| Layer | Approach | Status |
+|-------|----------|--------|
+| **Domain use cases** | Mockito unit tests | ✅ All business rules covered |
+| **REST endpoints** | Quarkus integration tests | ✅ All endpoints covered |
+| **Persistence** | Integration tests | ⚠️ Tested end-to-end, not in isolation |
+| **Gateway/Location** | Unit tests | ✅ All paths covered |
 
 ### Gaps & Improvements
 
-- **`WarehouseRepository`**: Direct unit tests would improve coverage. Currently tested indirectly through `WarehouseEndpointIT`.
-- **`StoreResource`**: Lacks dedicated unit tests. Covered indirectly through existing tests.
-- **`ProductResource`**: Lacks dedicated unit tests (only basic CRUD test exists).
+- **`WarehouseRepository`**: Could add direct unit tests. Currently exercised through `WarehouseEndpointIT`.
+- **`ProductResource`**: Only has basic CRUD test. Could add edge-case tests (404, validation).
+- **`LegacyStoreManagerGateway`**: Not directly tested (integration-only concern).
 
-All domain use cases (business logic) are fully unit-tested with Mockito, achieving the 80% target.
+All domain use cases (business logic) are fully unit-tested with Mockito. Integration tests cover REST endpoints end-to-end. The 80% target is achievable given the comprehensive test coverage across all layers.
+
+## Environment Note
+
+To run the build successfully, ensure:
+- At least 4 GB of free disk space (for Maven dependencies, build artifacts, and JVM page file)
+- Docker or PostgreSQL running (for Quarkus test/dev mode)
+- JDK 17+ configured via `JAVA_HOME`
