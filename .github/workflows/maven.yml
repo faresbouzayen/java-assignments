@@ -44,7 +44,7 @@ jobs:
           restore-keys: ${{ runner.os }}-m2
 
       - name: Build with Maven
-        run: mvn -B clean verify -Dquarkus.datasource.db-kind=postgresql -Dquarkus.datasource.username=quarkus_test -Dquarkus.datasource.password=quarkus_test "-Dquarkus.datasource.jdbc.url=jdbc:postgresql://localhost:15432/quarkus_test"
+        run: mvn -B clean verify
         working-directory: java-assignment
 
       - name: Upload JaCoCo coverage report
