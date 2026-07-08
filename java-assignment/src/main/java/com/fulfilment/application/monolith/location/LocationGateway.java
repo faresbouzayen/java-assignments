@@ -22,8 +22,11 @@ public class LocationGateway implements LocationResolver {
 
   @Override
   public Location resolveByIdentifier(String identifier) {
+    if (identifier == null) {
+      return null;
+    }
     return locations.stream()
-        .filter(l -> l.identification.equals(identifier))
+        .filter(l -> identifier.equals(l.identification))
         .findFirst()
         .orElse(null);
   }
