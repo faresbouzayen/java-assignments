@@ -152,6 +152,9 @@
                             <goal>check</goal>
                         </goals>
                         <configuration>
+                            <includes>
+                                <include>com/fulfilment/application/monolith/**/*</include>
+                            </includes>
                             <rules>
                                 <rule>
                                     <element>BUNDLE</element>
