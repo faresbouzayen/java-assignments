@@ -39,4 +39,15 @@ public class DbWarehouse {
     warehouse.archivedAt = this.archivedAt;
     return warehouse;
   }
+
+  public static DbWarehouse fromWarehouse(Warehouse warehouse) {
+    var db = new DbWarehouse();
+    db.businessUnitCode = warehouse.businessUnitCode;
+    db.location = warehouse.location;
+    db.capacity = warehouse.capacity;
+    db.stock = warehouse.stock;
+    db.createdAt = warehouse.createdAt;
+    db.archivedAt = warehouse.archivedAt;
+    return db;
+  }
 }
