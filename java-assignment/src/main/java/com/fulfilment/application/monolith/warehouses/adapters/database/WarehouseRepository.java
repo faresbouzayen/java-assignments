@@ -6,9 +6,12 @@ import io.quarkus.hibernate.orm.panache.PanacheRepository;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.transaction.Transactional;
 import java.util.List;
+import org.jboss.logging.Logger;
 
 @ApplicationScoped
 public class WarehouseRepository implements WarehouseStore, PanacheRepository<DbWarehouse> {
+
+  private static final Logger LOGGER = Logger.getLogger(WarehouseRepository.class);
 
   @Override
   public List<Warehouse> getAll() {
@@ -20,6 +23,7 @@ public class WarehouseRepository implements WarehouseStore, PanacheRepository<Db
   public void create(Warehouse warehouse) {
     var db = DbWarehouse.fromWarehouse(warehouse);
     this.persist(db);
+    LOGGER.debugf("Warehouse created: %s", warehouse.businessUnitCode);
   }
 
   @Override
@@ -32,6 +36,9 @@ public class WarehouseRepository implements WarehouseStore, PanacheRepository<Db
       db.stock = warehouse.stock;
       db.archivedAt = warehouse.archivedAt;
       this.persist(db);
+      LOGGER.debugf("Warehouse updated: %s", warehouse.businessUnitCode);
+    } else {
+      LOGGER.warnf("Attempted to update non-existent warehouse: %s", warehouse.businessUnitCode);
     }
   }
 
@@ -41,6 +48,9 @@ public class WarehouseRepository implements WarehouseStore, PanacheRepository<Db
     var db = this.find("businessUnitCode", warehouse.businessUnitCode).firstResult();
     if (db != null) {
       this.delete(db);
+      LOGGER.debugf("Warehouse removed: %s", warehouse.businessUnitCode);
+    } else {
+      LOGGER.warnf("Attempted to remove non-existent warehouse: %s", warehouse.businessUnitCode);
     }
   }
 

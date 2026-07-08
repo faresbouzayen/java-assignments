@@ -6,6 +6,7 @@ import com.fulfilment.application.monolith.warehouses.domain.ports.LocationResol
 import com.fulfilment.application.monolith.warehouses.domain.ports.WarehouseStore;
 import jakarta.enterprise.context.ApplicationScoped;
 import java.time.LocalDateTime;
+import org.jboss.logging.Logger;
 
 @ApplicationScoped
 public class CreateWarehouseUseCase implements CreateWarehouseOperation {
@@ -20,6 +21,7 @@ public class CreateWarehouseUseCase implements CreateWarehouseOperation {
 
   @Override
   public void create(Warehouse warehouse) {
+    LOGGER.debugf("Creating warehouse with buCode: %s", warehouse.businessUnitCode);
     var existing = warehouseStore.findByBusinessUnitCode(warehouse.businessUnitCode);
     if (existing != null && existing.archivedAt == null) {
       throw new IllegalArgumentException(
@@ -50,5 +52,6 @@ public class CreateWarehouseUseCase implements CreateWarehouseOperation {
 
     warehouse.createdAt = LocalDateTime.now();
     warehouseStore.create(warehouse);
+    LOGGER.infof("Warehouse created: %s", warehouse.businessUnitCode);
   }
 }

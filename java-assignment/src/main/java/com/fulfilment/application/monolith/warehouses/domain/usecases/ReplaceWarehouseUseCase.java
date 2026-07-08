@@ -6,9 +6,12 @@ import com.fulfilment.application.monolith.warehouses.domain.ports.ReplaceWareho
 import com.fulfilment.application.monolith.warehouses.domain.ports.WarehouseStore;
 import jakarta.enterprise.context.ApplicationScoped;
 import java.time.LocalDateTime;
+import org.jboss.logging.Logger;
 
 @ApplicationScoped
 public class ReplaceWarehouseUseCase implements ReplaceWarehouseOperation {
+
+  private static final Logger LOGGER = Logger.getLogger(ReplaceWarehouseUseCase.class);
 
   private final WarehouseStore warehouseStore;
   private final LocationResolver locationResolver;
@@ -20,6 +23,7 @@ public class ReplaceWarehouseUseCase implements ReplaceWarehouseOperation {
 
   @Override
   public void replace(Warehouse newWarehouse) {
+    LOGGER.debugf("Replacing warehouse with buCode: %s", newWarehouse.businessUnitCode);
     var existingWarehouse =
         warehouseStore.findByBusinessUnitCode(newWarehouse.businessUnitCode);
     if (existingWarehouse == null || existingWarehouse.archivedAt != null) {
@@ -47,5 +51,6 @@ public class ReplaceWarehouseUseCase implements ReplaceWarehouseOperation {
 
     newWarehouse.createdAt = LocalDateTime.now();
     warehouseStore.create(newWarehouse);
+    LOGGER.infof("Warehouse replaced: %s (old archived, new created)", newWarehouse.businessUnitCode);
   }
 }
