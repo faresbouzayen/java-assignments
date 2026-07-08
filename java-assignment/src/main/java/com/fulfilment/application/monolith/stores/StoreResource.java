@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import io.quarkus.panache.common.Sort;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
+import jakarta.persistence.EntityManager;
 import jakarta.transaction.Transactional;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.DELETE;
@@ -28,6 +29,8 @@ import org.jboss.logging.Logger;
 public class StoreResource {
 
   @Inject LegacyStoreManagerGateway legacyStoreManagerGateway;
+
+  @Inject EntityManager entityManager;
 
   private static final Logger LOGGER = Logger.getLogger(StoreResource.class.getName());
 
@@ -54,6 +57,7 @@ public class StoreResource {
     }
 
     store.persist();
+    entityManager.flush();
 
     legacyStoreManagerGateway.createStoreOnLegacySystem(store);
 
@@ -76,6 +80,7 @@ public class StoreResource {
 
     entity.name = updatedStore.name;
     entity.quantityProductsInStock = updatedStore.quantityProductsInStock;
+    entityManager.flush();
 
     legacyStoreManagerGateway.updateStoreOnLegacySystem(updatedStore);
 
@@ -103,6 +108,8 @@ public class StoreResource {
     if (entity.quantityProductsInStock != 0) {
       entity.quantityProductsInStock = updatedStore.quantityProductsInStock;
     }
+
+    entityManager.flush();
 
     legacyStoreManagerGateway.updateStoreOnLegacySystem(updatedStore);
 
