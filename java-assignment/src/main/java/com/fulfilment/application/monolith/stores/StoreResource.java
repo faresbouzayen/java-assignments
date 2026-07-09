@@ -95,11 +95,6 @@ public class StoreResource {
   @Path("{id}")
   @Transactional
   public Store patch(Long id, Store updatedStore) {
-    if (updatedStore.name == null) {
-      LOGGER.warnf("Patch request for store %d without name", id);
-      throw new WebApplicationException("Store Name was not set on request.", 422);
-    }
-
     Store entity = Store.findById(id);
 
     if (entity == null) {
@@ -111,7 +106,9 @@ public class StoreResource {
       entity.name = updatedStore.name;
     }
 
-    entity.quantityProductsInStock = updatedStore.quantityProductsInStock;
+    if (updatedStore.quantityProductsInStock != null) {
+      entity.quantityProductsInStock = updatedStore.quantityProductsInStock;
+    }
 
     entityManager.flush();
 
