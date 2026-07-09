@@ -39,6 +39,8 @@ public class WarehouseRepository implements WarehouseStore, PanacheRepository<Db
       LOGGER.debugf("Warehouse updated: %s", warehouse.businessUnitCode);
     } else {
       LOGGER.warnf("Attempted to update non-existent warehouse: %s", warehouse.businessUnitCode);
+      throw new IllegalArgumentException(
+          "Warehouse not found: " + warehouse.businessUnitCode);
     }
   }
 
