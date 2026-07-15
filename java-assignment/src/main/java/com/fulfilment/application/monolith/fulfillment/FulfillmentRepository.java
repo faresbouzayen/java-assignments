@@ -18,4 +18,18 @@ public class FulfillmentRepository implements PanacheRepository<FulfillmentAssoc
   public List<FulfillmentAssociation> findByWarehouseBusinessUnitCode(String warehouseBuCode) {
     return list("warehouseBusinessUnitCode", warehouseBuCode);
   }
+
+  public long countDistinctWarehousesByStoreId(Long storeId) {
+    return list("storeId", storeId).stream()
+        .map(a -> a.warehouseBusinessUnitCode)
+        .distinct()
+        .count();
+  }
+
+  public long countDistinctProductTypesByWarehouseBusinessUnitCode(String warehouseBuCode) {
+    return list("warehouseBusinessUnitCode", warehouseBuCode).stream()
+        .map(a -> a.productId)
+        .distinct()
+        .count();
+  }
 }

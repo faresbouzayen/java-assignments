@@ -150,7 +150,7 @@ public class CreateWarehouseUseCaseTest {
     IllegalArgumentException ex =
         assertThrows(IllegalArgumentException.class, () -> useCase.create(warehouse));
     assertEquals(
-        "Capacity exceeds maximum capacity for location: ZWOLLE-001", ex.getMessage());
+        "Total capacity at location would exceed maximum capacity: ZWOLLE-001", ex.getMessage());
     verify(warehouseStore, never()).create(any());
   }
 

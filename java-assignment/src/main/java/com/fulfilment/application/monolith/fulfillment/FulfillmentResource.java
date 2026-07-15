@@ -78,7 +78,9 @@ public class FulfillmentResource {
 
     List<FulfillmentAssociation> storeAssociations =
         fulfillmentRepository.findByStoreId(association.storeId);
-    if (storeAssociations.size() >= 3) {
+    long distinctWarehousesForStore =
+        fulfillmentRepository.countDistinctWarehousesByStoreId(association.storeId);
+    if (distinctWarehousesForStore >= 3) {
       LOGGER.warnf("Store %d already linked to 3 warehouses", association.storeId);
       throw new WebApplicationException(
           "Store can be fulfilled by a maximum of 3 warehouses", 400);
@@ -87,7 +89,10 @@ public class FulfillmentResource {
     List<FulfillmentAssociation> warehouseAssociations =
         fulfillmentRepository.findByWarehouseBusinessUnitCode(
             association.warehouseBusinessUnitCode);
-    if (warehouseAssociations.size() >= 5) {
+    long distinctProductTypesForWarehouse =
+        fulfillmentRepository.countDistinctProductTypesByWarehouseBusinessUnitCode(
+            association.warehouseBusinessUnitCode);
+    if (distinctProductTypesForWarehouse >= 5) {
       LOGGER.warnf("Warehouse %s already stores 5 product types",
           association.warehouseBusinessUnitCode);
       throw new WebApplicationException(

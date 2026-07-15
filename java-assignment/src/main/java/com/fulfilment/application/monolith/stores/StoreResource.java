@@ -86,7 +86,7 @@ public class StoreResource {
     entityManager.flush();
 
     LOGGER.infof("Store updated: %s (id=%d)", entity.name, id);
-    legacyStoreManagerGateway.updateStoreOnLegacySystem(updatedStore);
+    legacyStoreManagerGateway.updateStoreOnLegacySystem(entity);
 
     return entity;
   }
@@ -113,7 +113,7 @@ public class StoreResource {
     entityManager.flush();
 
     LOGGER.infof("Store patched: %s (id=%d)", entity.name, id);
-    legacyStoreManagerGateway.updateStoreOnLegacySystem(updatedStore);
+    legacyStoreManagerGateway.updateStoreOnLegacySystem(entity);
 
     return entity;
   }

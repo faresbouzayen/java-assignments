@@ -15,7 +15,7 @@ public class WarehouseRepository implements WarehouseStore, PanacheRepository<Db
 
   @Override
   public List<Warehouse> getAll() {
-    return this.listAll().stream().map(DbWarehouse::toWarehouse).toList();
+    return this.find("archivedAt is null").list().stream().map(DbWarehouse::toWarehouse).toList();
   }
 
   @Override
@@ -23,6 +23,7 @@ public class WarehouseRepository implements WarehouseStore, PanacheRepository<Db
   public void create(Warehouse warehouse) {
     var db = DbWarehouse.fromWarehouse(warehouse);
     this.persist(db);
+    warehouse.id = db.id;
     LOGGER.debugf("Warehouse created: %s", warehouse.businessUnitCode);
   }
 

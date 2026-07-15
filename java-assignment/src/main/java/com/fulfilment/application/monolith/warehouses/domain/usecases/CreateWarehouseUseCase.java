@@ -43,9 +43,13 @@ public class CreateWarehouseUseCase implements CreateWarehouseOperation {
           "Maximum number of warehouses reached at location: " + warehouse.location);
     }
 
-    if (warehouse.capacity > location.maxCapacity) {
+    long totalCapacityAtLocation = warehouseStore.getAll().stream()
+        .filter(w -> w.location.equals(warehouse.location) && w.archivedAt == null)
+        .mapToLong(w -> w.capacity)
+        .sum();
+    if (totalCapacityAtLocation + warehouse.capacity > location.maxCapacity) {
       throw new IllegalArgumentException(
-          "Capacity exceeds maximum capacity for location: " + warehouse.location);
+          "Total capacity at location would exceed maximum capacity: " + warehouse.location);
     }
 
     if (warehouse.stock > warehouse.capacity) {
